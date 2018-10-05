@@ -3,12 +3,16 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
 train = pd.read_csv('./data/train.csv')
-train.Sex = train.Sex.replace(['male','female'],[0,1]) #性別が扱いづらいので男性0、女性1とする
+
+####データ前処理####
+
+#性別が扱いづらいので男性0、女性1とする
+train.Sex = train.Sex.replace(['male','female'],[0,1])
 # 欠損値の扱い
 train["Age"].fillna(train.Age.median(), inplace = True)
 train["Fare"].fillna(train.Fare.median(), inplace = True)
 
-#新たなカラムFamilySizeを用意(Sibsp... 乗船している夫婦、兄弟姉妹の数, Parch...乗船している親、子供の数)
+#新たなカラムFamilySize,IsAlineを追加
 train["FamilySize"] = train["SibSp"] + train["Parch"] + 1
 for train in [train]:
 	train['IsAlone'] = 0
@@ -16,20 +20,26 @@ for train in [train]:
 	train.loc[train['FamilySize'] == 1, 'IsAlone'] = 1
 train_fm = train.drop(["Name", "SibSp", "Parch", "Ticket", "Cabin", "Embarked"], axis=1)
 
+#チケットクラスをダミー変数を用いて3つに分割	
+
+
+####学習####
+
 train_data = train_fm.values
 xs = train_data[:, 2:] #Pclass以降の変数
 y = train_data[:, 1] #正解データ
 
 #forest = RandomForestClassifier(n_estimators = 100) # 決定木の数: 100
 #grid search
-print("Grid Serch")
+print("Grid Search")
 parameters = {
-        'n_estimators'      : [5, 10, 20, 30, 50, 100, 300],
-        #'max_features'      : [3, 5, 10, 15, 20],
-        'random_state'      : [0],
-        'n_jobs'            : [1],
-        'min_samples_split' : [3, 5, 10, 15, 20, 25, 30, 40, 50, 100],
-        'max_depth'         : [3, 5, 10, 15, 20, 25, 30, 40, 50, 100]
+        'n_estimators'      : [100, 300, 500, 1000],
+        'max_features'      : ['auto', 'sqrt', 'log2'],
+        #'random_state'      : [0],
+        #'n_jobs'            : [1],
+        #'min_samples_split' : [3, 5, 10, 15, 20, 25, 30, 40, 50, 100],
+        'max_depth'         : [3, 5, 10, 15, 20, 25, 30, 50]
+        #'criterion'         : ['gini', 'entropy']
 }
 from sklearn.grid_search import GridSearchCV
 clf = GridSearchCV(RandomForestClassifier(), parameters)
