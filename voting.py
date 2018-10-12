@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import train_test_split
 
-train = pd.read_csv('./data/train.csv')
+train = pd.read_csv('../data/train.csv')
 
 ####データ前処理####
 
@@ -132,9 +132,9 @@ X_train, X_val, y_train, y_val = train_test_split(xs, labels, train_size=0.8, ra
             # min_weight_fraction_leaf=0.0, n_estimators=60, n_jobs=1,
             # oob_score=False, random_state=3, verbose=0, warm_start=False)
 #clf_rf = RandomForestClassifier(n_estimators=65)
-clf_rf = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy', max_depth=5, max_features='auto', max_leaf_nodes=None, min_samples_leaf=1, min_samples_split=5, min_weight_fraction_leaf=0.0, n_estimators=40, n_jobs=1, oob_score=False, random_state=3, verbose=0, warm_start=False)
+clf_rf = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy', max_depth=5, max_features='auto',max_leaf_nodes=None, min_samples_leaf=1, min_samples_split=5, min_weight_fraction_leaf=0.00, n_estimators=42, n_jobs=1, oob_score=False, random_state=3, verbose=0, warm_start=False)
 
-clf_svm = svm.SVC(kernel='rbf', C=1, gamma=0.0666667)
+clf_svm = svm.SVC(kernel='rbf', C=1, gamma=0.1)
 clf_nb = GaussianNB()
 
 
@@ -151,8 +151,8 @@ print("accuracy_score: ", accuracy_score(y_val, predict))
 print("precision_score:", precision_score(y_val, predict))
 print("recall: ", recall_score(y_val, predict))
 
-clf_ens = VotingClassifier(estimators=[ ('rf', clf_rf), ('nb', clf_nb)], voting='hard')
-# clf_ens = VotingClassifier(estimators=[ ('rf', clf_rf),('svm', clf_svm)], voting='hard')
+#clf_ens = VotingClassifier(estimators=[ ('rf', clf_rf), ('nb', clf_nb)], voting='hard')
+clf_ens = VotingClassifier(estimators=[ ('rf', clf_rf),('svm', clf_svm)], voting='hard')
 #clf_ens = VotingClassifier(estimators=[ ('rf', clf_rf),('nb',clf_nb),('svm', clf_svm)], voting='hard')
 clf_ens.fit(X_train, y_train)
 print("ensemble")
@@ -163,7 +163,7 @@ print("recall: ", recall_score(y_val, predict))
 
 #学習
 #forest = forest.fit(xs, y)
-test_df = pd.read_csv("./data/test.csv").replace(["male","female"],[0,1])
+test_df = pd.read_csv("../data/test.csv").replace(["male","female"],[0,1])
 
 pclass_dummies_test  = pd.get_dummies(test_df['Pclass'])
 pclass_dummies_test.columns = ['Class_1','Class_2','Class_3']
@@ -212,7 +212,7 @@ zip_data = zip(test_data[:,0].astype(int), output.astype(int))
 predict_data = list(zip_data)
 
 import csv
-fname = "./result/result_ens.csv"
+fname = "../result/result_ens.csv"
 with open(fname, "w") as f:
     writer = csv.writer(f, lineterminator='\n')
     writer.writerow(["PassengerId", "Survived"])
@@ -225,7 +225,7 @@ output = clf_rf.predict(xs_test)
 zip_data = zip(test_data[:,0].astype(int), output.astype(int))
 predict_data = list(zip_data)
 
-fname = "./result/result_rf.csv"
+fname = "../result/result_rf.csv"
 with open(fname, "w") as f:
     writer = csv.writer(f, lineterminator='\n')
     writer.writerow(["PassengerId", "Survived"])

@@ -2,7 +2,7 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
-train = pd.read_csv('./data/train.csv')
+train = pd.read_csv('../data/train.csv')
 
 ####データ前処理####
 
@@ -48,7 +48,7 @@ print(clf.best_estimator_)
 
 #学習
 #forest = forest.fit(xs, y)
-test_df = pd.read_csv("./data/test.csv").replace(["male","female"],[0,1])
+test_df = pd.read_csv("../data/test.csv").replace(["male","female"],[0,1])
 
 #欠損値の補完
 test_df["Age"].fillna(train.Age.median(), inplace=True)
@@ -69,7 +69,7 @@ zip_data = zip(test_data[:,0].astype(int), output.astype(int))
 predict_data = list(zip_data)
 
 import csv
-fname = "./result/presult_rf_grid.csv"
+fname = "../result/presult_rf_grid.csv"
 with open(fname, "w") as f:
     writer = csv.writer(f, lineterminator='\n')
     writer.writerow(["PassengerId", "Survived"])
