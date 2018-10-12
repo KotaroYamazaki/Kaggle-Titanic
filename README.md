@@ -10,7 +10,7 @@
 - validation.ipynb: 数種類のモデルに対して訓練データを分割しそれぞれを評価
 - voting.py: ランダムフォレスト, SVM, NBの組み合わせを決め多数決で出力する
 
-###Best Score
+### Best Score
 0.79425
 
 ### 環境
